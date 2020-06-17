@@ -3,6 +3,7 @@ import sys
 import re
 import json
 
+# class holds all the attributes for an object of type Question
 class Question:
     def __init__(self, category, ques_type, difficulty, ques, correct_ans, incorrect_ans):
         self.category = category
@@ -12,7 +13,7 @@ class Question:
         self.correct_ans = correct_ans
         self.incorrect_ans = incorrect_ans
 
-#returns the string contents of the page at url, or "" if there is an error
+# returns the string contents of the page at url, or "" if there is an error
 def readurl(url):
     try:
         fp = urllib.request.urlopen(url)
@@ -23,6 +24,7 @@ def readurl(url):
     except:
         return ""
 
+# cleans input for inverted commas and quotation marks
 def clean(given):
     if type(given) == str:
         return given.replace("&#039;", "'").replace('&quot;', '"')
@@ -32,7 +34,7 @@ def clean(given):
             newlist.append(clean(elem))
         return newlist
 
-
+# creates question objects and stores them in a ques_list
 def obj_create(content):
     ques_dict = json.loads(content)["results"]      # could use eval(str) but eval is very powerful and should not be used if input is not completely trusted
     ques_list = []
@@ -43,30 +45,7 @@ def obj_create(content):
     for q in ques_list:
         print(q.category, q.ques_type, q.difficulty, q.ques, q.correct_ans, str(q.incorrect_ans))
 
-def jsontolist(string): #string is actually a dictionary
-    string = string.strip("{ }").replace('"', ' ').replace(',', ' ')
-    #string = create_ques_object(string)
-    stringlist = re.split("[{}]", string)
-    ques_list = []
-    '''try:
-        stringlist.remove("")
-    except:
-        pass'''
-    for s in stringlist:
-        ques_list.append(create_ques_object(s))
-        print(s, "###")
-
-'''def create_ques_object(string):
-    #new_str = string.replace(',', ' ').replace('"', ' ')
-    stringlist = string.split(' ')
-
-    category = ' '.join(map(str, stringlist[stringlist.index("category"+1) : stringlist.index("type"-1)])
-    ques_type = ' '.join(map(str, stringlist[stringlist.index("type"+1) : stringlist.index("difficulty"-1)])
-    difficulty = ' '.join(map(str, stringlist[stringlist.index("difficulty"+1) : stringlist.index("question"-1)])
-    
-    q = Question(category, ques_type, )
-    #return new_str'''
-
+# main method
 def main():
     content = readurl("https://opentdb.com/api.php?amount=10")
     obj_create(content)
