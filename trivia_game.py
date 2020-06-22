@@ -12,6 +12,7 @@ class Question:
         self.ques = ques
         self.correct_ans = correct_ans
         self.incorrect_ans = incorrect_ans
+        self.user_ans = ""
 
 # returns the string contents of the page at url, or "" if there is an error
 def readurl(url):
@@ -45,9 +46,27 @@ def obj_create(content):
     for q in ques_list:
         print(q.category, q.ques_type, q.difficulty, q.ques, q.correct_ans, str(q.incorrect_ans))
 
+def init():
+    print("Trivia game")
+    print("The game will ask 10 questions from different categories and keep a track of your score.")
+    
+    ques_type = input("Choose type of questions: Multiple choice (1) or True / False (2) or Mixed (3)?")
+    while True:
+        if not(ques_type.isnumeric and 0 < int(ques_type) < 4):
+            ques_type = input("Invalid input. Please enter \n1 for multiple choice \n2 for true / false \n3 for mixed \n> ")
+        else:
+            if int(ques_type) == 1:
+                return "&type=multiple"
+            elif int(ques_type) == 2:
+                return "&type=boolean"
+            else:
+                return ""
+
+
 # main method
 def main():
-    content = readurl("https://opentdb.com/api.php?amount=10")
+    ques_type = init()
+    content = readurl("https://opentdb.com/api.php?amount=10" + ques_type)
     obj_create(content)
 
 main()
