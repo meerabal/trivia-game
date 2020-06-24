@@ -3,6 +3,7 @@ import sys
 import re
 import json
 import random
+import os.path
 
 # class holds all the attributes for an object of type Question
 class Question:
@@ -80,6 +81,7 @@ def init():
     return return_str
 
 def ask(ques_list):
+    score = 0
     for q in ques_list:
         print()
         print(q.ques)
@@ -95,15 +97,44 @@ def ask(ques_list):
         q.user_ans = user_ans
         if q.correct_ans.lower() == user_ans.lower():
             print("Your answer is correct!")
+            score += 10
         else:
             print("Your answer is incorrect.")
             print("The correct answer is:", q.correct_ans)
+            score -= 2
+    return score
+
+def set_highscore(current_score):
+    highscore = 0
+    try:
+        # read and check
+        f = open("highscore.txt", "r")
+        highscore = int(f.read())
+        f.close()
+        if highscore < current_score:
+            # set new highscore
+            f = open("highscore.txt", "w")
+            f.write(str(current_score))
+            highscore = current_score
+            f.close()
+    except:
+        f = open("highscore.txt", "w+")
+        f.write(str(current_score))
+        highscore = current_score
+        f.close()
+    
+    display_scores(current_score, highscore)
+
+def display_scores(current_score, highscore):
+    print("Your score is:", current_score, "points.")
+    print("The highscore is:", highscore, "points.")
 
 # main method
 def main():
     ques_type = init()
     content = readurl("https://opentdb.com/api.php?amount=10" + ques_type)
     ques_list = obj_create(content)
-    ask(ques_list)
+    current_score = ask(ques_list)
+    set_highscore(current_score)
 
 main()
