@@ -1,9 +1,7 @@
 import urllib.request
 import sys
-import re
 import json
 import random
-import os.path
 
 # class holds all the attributes for an object of type Question
 class Question:
@@ -44,16 +42,15 @@ def obj_create(content):
     for q in ques_dict:
         ques_list.append(Question(q["category"], q["type"], q["difficulty"], clean(q["question"]), clean(q["correct_answer"]), clean(q["incorrect_answers"])))
     return ques_list
-    '''# testing
-    for q in ques_list:
-        print(q.category, q.ques_type, q.difficulty, q.ques, q.correct_ans, str(q.incorrect_ans))'''
-
+    
 # sets type of question to be asked and difficulty
 def init():
     return_str = ""
 
     print("\n==================== Trivia game ====================")
     print("\nThe game will ask 10 questions from different categories and keep a track of your score.")
+    print("Each correct answer scores +10 points and each incorrect answer scores -2 points.")
+
     difficulty = input("\nChoose difficulty level: Easy (1) or Medium (2) or Hard (3) or Mixed (4)? ")
     while True:
         if not(difficulty.isnumeric and 0 < int(difficulty) < 5):
@@ -80,6 +77,7 @@ def init():
     
     return return_str
 
+# asks the set of questions and generates score
 def ask(ques_list):
     score = 0
     for q in ques_list:
@@ -104,6 +102,7 @@ def ask(ques_list):
             score -= 2
     return score
 
+# checks score and sets highscore
 def set_highscore(current_score):
     highscore = 0
     try:
@@ -125,6 +124,7 @@ def set_highscore(current_score):
     
     display_scores(current_score, highscore)
 
+# displays current score and highscore
 def display_scores(current_score, highscore):
     print("Your score is:", current_score, "points.")
     print("The highscore is:", highscore, "points.")
